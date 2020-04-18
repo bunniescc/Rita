@@ -86,6 +86,7 @@
                     data[attr.name.substring(5)] = attr.value;
                 }
             }
+            console.log(data)
             widget(w, widgetName, data);
         }
     }
@@ -207,15 +208,20 @@
             document.body.prepend(widgetData.style);
         }
         if (widgetData.script) {
-            widgetData.script.setAttribute('widget-script', name);
             let widgets = widgetData.script.getAttribute('use-widget');
+            let factoryFunc = new Function('Rita', widgetData.script.textContent);
+            let Rita = {
+                defineWidget(init) {
+                    defineWidget(name, init);
+                }
+            };
             if (widgets) {
                 let widgetList = widgets.split(',');
                 loadWidget(widgetList, () => {
-                    document.body.append(widgetData.script);
+                    factoryFunc(Rita);
                 })
             } else {
-                document.body.append(widgetData.script);
+                factoryFunc(Rita);
             }
         }
     }
@@ -310,6 +316,8 @@
                     handler['created']();
                 }
                 return handler;
+            } else {
+                console.log('????????????')
             }
         }
     }
