@@ -1,0 +1,47 @@
+<template>
+    <div class="rita-card">
+        <div class="rita-card-header">
+            <span>Title</span>
+        </div>
+        <div class="rita-card-body">
+            <slot></slot>
+        </div>
+        <div class="rita-card-footer">
+        </div>
+    </div>
+</template>
+<style>
+    .rita-card {
+        box-sizing: border-box;
+        margin: 8px;
+        border-radius: 8px;
+        box-shadow: 0 0 11px 4px #ddd;
+        overflow: hidden;
+    }
+
+    .rita-card-header {
+        padding: 4px 8px;
+        background: grey;
+    }
+
+    .rita-card-body {
+        padding: 4px 8px;
+    }
+
+    .rita-card-footer {
+        text-align: right;
+        padding: 0 16px 16px 0;
+    }
+</style>
+<script>
+    (function () {
+        function Card(el, conf) {
+            if (conf.title) {
+                this.title = conf.title;
+                el.querySelector('.rita-card-header span').textContent = conf.title;
+            }
+        }
+
+        Rita.defineWidget('card', Card);
+    })();
+</script>
