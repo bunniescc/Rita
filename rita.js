@@ -11,6 +11,10 @@
     let widgetInstance = {};
     let widgetChildren = {};
 
+    function bindEvent(evtName, callback) {
+        if (typeof callback === 'function') events[evtName] = callback;
+    }
+
     function data() {
         if (arguments.length === 0) {
             return dataStorage;
@@ -55,6 +59,10 @@
             hash: match[3],
             query: query,
         }
+    }
+
+    function buildQuery(param) {
+        return Object.keys(param).map(k => (encodeURIComponent(k) + '=' + encodeURIComponent(param[k]))).join('&');
     }
 
     function pageCache(view, html) {
@@ -389,6 +397,25 @@
     WIN.Rita = {
         configure(conf) {
             configure(conf);
+        },
+        data: function () {
+            return data.apply(this, arguments);
+        },
+        storage: function () {
+            return storage.apply(this, arguments);
+        },
+        router: function () {
+            return parseRouter(window.location.hash.substring(1));
+        },
+        navigate: function (path, search, hash) {
+            let q = buildQuery(search || {});
+            window.location.hash = '#' + (path ? path : '') + (q ? ('?' + q) : '') + (hash ? ('#' + hash) : '');
+        },
+        on: function (evtName, callback) {
+            bindEvent(evtName, callback);
+        },
+        render: function (el, view, callback) {
+            replaceBlock(el, view, false, callback);
         },
         defineWidget: function (name, init) {
             defineWidget(name, init);
