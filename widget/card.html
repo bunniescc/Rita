@@ -38,10 +38,10 @@
         function Card(el, conf) {
             if (conf.title) {
                 this.title = conf.title;
-                el.querySelector('.rita-card-header span').textContent = conf.title;
+                el.querySelector('.rita-card-header span').innerText = conf.title;
             }
         }
 
-        Rita.defineWidget('card', Card);
+        Rita.defineWidget(Card);
     })();
 </script>
