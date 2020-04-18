@@ -246,18 +246,16 @@
         if (widgetData.script) {
             let widgets = widgetData.script.getAttribute('use-widget');
             let factoryFunc = new Function('Rita', widgetData.script.textContent);
-            let Rita = {
-                defineWidget(init) {
-                    defineWidget(widgetInfo.origin, init);
-                }
-            };
+            WIN.Rita.defineWidget = (init) => defineWidget(widgetInfo.origin, init);
             if (widgets) {
                 let widgetList = widgets.split(',');
                 loadWidget(widgetList, () => {
-                    factoryFunc(Rita);
+                    factoryFunc(WIN.Rita);
+                    delete WIN.Rita.defineWidget;
                 })
             } else {
-                factoryFunc(Rita);
+                factoryFunc(WIN.Rita);
+                delete WIN.Rita.defineWidget;
             }
         }
         if (!widgets[widgetInfo.id]) {
@@ -416,9 +414,6 @@
         },
         render: function (el, view, callback) {
             replaceBlock(el, view, false, callback);
-        },
-        defineWidget: function (name, init) {
-            defineWidget(name, init);
         },
         widget: function (el, name, param) {
             return widget(el, name, (param || {}));
