@@ -360,7 +360,7 @@
             if (typeof oldHandler.unload === "function") {
                 oldHandler.unload();
             }
-            oldHandler = undefined;
+            oldHandler = null;
             delete widgetInstance[ritaId];
             el.removeAttribute('widget');
             el.querySelectorAll('[widget]').forEach((node) => {
