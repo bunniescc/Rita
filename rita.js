@@ -86,7 +86,6 @@
                     data[attr.name.substring(5)] = attr.value;
                 }
             }
-            console.log(data)
             widget(w, widgetName, data);
         }
     }
@@ -194,17 +193,46 @@
         }
     }
 
+    function widgetInfo(name) {
+        name = name.trim();
+        if (!name) return null;
+        let reg = /(.*)\s+as\s+(.*)/;
+        let originName = name;
+        let widgetId;
+        let widgetPath;
+        let c = reg.exec(name);
+        if (c) {
+            originName = c[1];
+            widgetId = c[2];
+        }
+        if (originName[0] === '@') {
+            let ws = originName.substring(1).split('.');
+            if (!widgetId) widgetId = ws.pop();
+            widgetPath = `https://rita.bunnies.cc/widget/${ws.join('/')}/${widgetId}.html`;
+        } else {
+            let ws = originName.split('.');
+            if (!widgetId) widgetId = ws.pop();
+            widgetPath = `${widgetDir}/${ws.join('/')}/${widgetId}.html`;
+        }
+        return {
+            id: widgetId,
+            origin: originName,
+            key: `widget$${originName}`,
+            path: widgetPath,
+        }
+    }
+
     function defineWidget(name, initializer) {
         widgets[name].initializer = initializer;
     }
 
-    function prepareWidget(name, widgetData) {
-        if (!widgets[name]) {
-            widgets[name] = {};
+    function prepareWidget(widgetInfo, widgetData) {
+        if (!widgets[widgetInfo.origin]) {
+            widgets[widgetInfo.origin] = {};
         }
-        widgets[name].html = widgetData.template.innerHTML;
+        widgets[widgetInfo.origin].html = widgetData.template.innerHTML;
         if (widgetData.style) {
-            widgetData.style.setAttribute('widget-style', name);
+            widgetData.style.setAttribute('widget-style', widgetInfo.origin);
             document.body.prepend(widgetData.style);
         }
         if (widgetData.script) {
@@ -212,7 +240,7 @@
             let factoryFunc = new Function('Rita', widgetData.script.textContent);
             let Rita = {
                 defineWidget(init) {
-                    defineWidget(name, init);
+                    defineWidget(widgetInfo.origin, init);
                 }
             };
             if (widgets) {
@@ -224,33 +252,30 @@
                 factoryFunc(Rita);
             }
         }
+        if (!widgets[widgetInfo.id]) {
+            widgets[widgetInfo.id] = widgets[widgetInfo.origin];
+        }
     }
 
     function loadOneWidget(name, callback) {
-        name = name.trim();
-        if (!name || widgets[name]) {
+        let info = widgetInfo(name);
+        if (!info || widgets[info.origin]) {
             if (typeof callback === 'function') callback();
             return;
         }
-        let widgetPath;
-        if (name.startsWith('@')) {
-            widgetPath = `https://rita.bunnies.cc/widget/${name.substring(1).split('.').join('/')}.html`;
-        } else {
-            widgetPath = `${widgetDir}/${name.split('.').join('/')}.html`;
-        }
-        let cacheHtml = pageCache(widgetPath);
+        let cacheHtml = pageCache(info.key);
         if (cacheHtml) {
-            prepareWidget(name, processHtml(cacheHtml));
+            prepareWidget(info, processHtml(cacheHtml));
             if (typeof callback === 'function') callback();
             return;
         }
-        fetch(widgetPath + pageVerQ).catch(err => {
+        fetch(info.path + pageVerQ).catch(err => {
             appDiv.innerHTML = `<h1>Load Widget ${name} Failed</h1>`;
         }).then(r => r.text()).then(html => {
             let pageData = processHtml(html);
             if (pageData && pageData.template) {
-                pageCache(widgetPath, html);
-                prepareWidget(name, pageData);
+                pageCache(info.key, html);
+                prepareWidget(info, pageData);
                 if (typeof callback === 'function') callback();
             } else {
                 appDiv.innerHTML = `<h1>Widget ${name} is invalid</h1>`;
@@ -316,8 +341,6 @@
                     handler['created']();
                 }
                 return handler;
-            } else {
-                console.log('????????????')
             }
         }
     }
