@@ -226,7 +226,12 @@
             if (typeof callback === 'function') callback();
             return;
         }
-        let widgetPath = `${widgetDir}/${name.split('.').join('/')}.html`;
+        let widgetPath;
+        if (name.startsWith('@')) {
+            widgetPath = `https://rita.bunnies.cc/widget/${name.substring(1).split('.').join('/')}.html`;
+        } else {
+            widgetPath = `${widgetDir}/${name.split('.').join('/')}.html`;
+        }
         let cacheHtml = pageCache(widgetPath);
         if (cacheHtml) {
             prepareWidget(name, processHtml(cacheHtml));
@@ -242,7 +247,7 @@
                 prepareWidget(name, pageData);
                 if (typeof callback === 'function') callback();
             } else {
-                appDiv.innerHTML = `<h1>Load Widget ${name} Failed</h1>`;
+                appDiv.innerHTML = `<h1>Widget ${name} is invalid</h1>`;
             }
         });
     }
