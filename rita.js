@@ -399,32 +399,33 @@
     WIN.Rita = {
         configure(conf) {
             configure(conf);
+            return this;
         },
-        data: function () {
+        data() {
             return data.apply(this, arguments);
         },
-        storage: function () {
+        storage() {
             return storage.apply(this, arguments);
         },
-        formatUrl: function (path, search, hash) {
+        formatUrl(path, search, hash) {
             return formatUrl(path, search, hash);
         },
-        router: function () {
+        router() {
             return parseRouter(window.location.hash.substring(1));
         },
-        navigate: function (path, search, hash) {
+        navigate(path, search, hash) {
             window.location.hash = '#' + formatUrl(path, search, hash);
         },
-        replace: function (path, search, hash) {
+        replace(path, search, hash) {
             window.location.replace('#' + formatUrl(path, search, hash))
         },
-        on: function (evtName, callback) {
+        on(evtName, callback) {
             bindEvent(evtName, callback);
         },
-        render: function (el, view, callback) {
+        render(el, view, callback) {
             replaceBlock(el, view, false, callback);
         },
-        widget: function (el, name, param) {
+        widget(el, name, param) {
             return widget(el, name, (param || {}));
         },
     }
