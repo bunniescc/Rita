@@ -26,18 +26,26 @@
         }
     }
 
-    function storage(key, data) {
+    function baseStorage(storage, key, data) {
         if (!key) return;
-        let realKey = `${NAME}@${scopeDir}$${key}`;
-        if (data === null) return delete localStorage[realKey];
-        if (typeof data === 'undefined') {
+        var realKey = `${NAME}@${scopeDir}$${key}`;
+        if (data === null) return delete storage[realKey];
+        if (data === undefined) {
             try {
-                return JSON.parse(localStorage[realKey]);
+                return JSON.parse(storage[realKey]);
             } catch (e) {
                 return {};
             }
         }
-        if (typeof data === 'object') localStorage.setItem(realKey, JSON.stringify(data));
+        if (typeof data === 'object') storage[realKey] = JSON.stringify(data);
+    }
+
+    function storage(key, data) {
+        return baseStorage(localStorage, key, data);
+    }
+
+    function session(key, data) {
+        return baseStorage(sessionStorage, key, data);
     }
 
     function parseRouter(hash) {
