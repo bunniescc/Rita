@@ -50,8 +50,7 @@
         let query = {};
         for (let i = 0; i < vs.length; i++) {
             let vp = vs[i].split('=');
-            if (vp[0] !== '')
-                query[vp[0]] = vp[1];
+            if (vp[0] !== '') query[vp[0]] = vp[1];
         }
         return {
             path: match[1][0] === '/' ? match[1] : ('/' + match[1]),
@@ -63,6 +62,11 @@
 
     function buildQuery(param) {
         return Object.keys(param).map(k => (encodeURIComponent(k) + '=' + encodeURIComponent(param[k]))).join('&');
+    }
+
+    function formatUrl(path, search, hash) {
+        let q = buildQuery(search || {});
+        return (path ? path : '') + (q ? ('?' + q) : '') + (hash ? ('#' + hash) : '');
     }
 
     function pageCache(view, html) {
@@ -402,12 +406,17 @@
         storage: function () {
             return storage.apply(this, arguments);
         },
+        formatUrl: function (path, search, hash) {
+            return formatUrl(path, search, hash);
+        },
         router: function () {
             return parseRouter(window.location.hash.substring(1));
         },
         navigate: function (path, search, hash) {
-            let q = buildQuery(search || {});
-            window.location.hash = '#' + (path ? path : '') + (q ? ('?' + q) : '') + (hash ? ('#' + hash) : '');
+            window.location.hash = '#' + formatUrl(path, search, hash);
+        },
+        replace: function (path, search, hash) {
+            window.location.replace('#' + formatUrl(path, search, hash))
         },
         on: function (evtName, callback) {
             bindEvent(evtName, callback);
