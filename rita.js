@@ -1,6 +1,9 @@
 (function (WIN) {
     'use strict';
+    const VERSION = '0.0.5';
     const NAME = 'Rita';
+    const LOGO = ' |\\   /|\n  \\|_|/\n  /   \\\n  \\___/\n';
+
     let dataStorage = {};
     let events = {};
     let widgets = {};
@@ -394,6 +397,8 @@
         pageVerQ = pageVer ? ('?v=' + pageVer) : '';
         cacheExpireTime = options.expire || 604800;
 
+        if (isDebug) Rita.logo();
+
         window.addEventListener('hashchange', () => {
             renderPage();
         });
@@ -402,6 +407,10 @@
     }
 
     WIN.Rita = {
+        logo(ret) {
+            if (ret) return LOGO;
+            console.log('\n%c%s\n%c%s\n', 'color:#1996ff;font-size:20px;', LOGO, 'color:#1996ff', `Powered By ${NAME} Ver ${VERSION}`);
+        },
         configure(conf) {
             configure(conf);
             return this;
