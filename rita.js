@@ -15,17 +15,14 @@
         if (typeof callback === 'function') events[evtName] = callback;
     }
 
-    function data() {
-        if (arguments.length === 0) {
-            return dataStorage;
-        } else if (arguments.length === 1) {
-            if (typeof arguments[0] === 'object') {
-                Object.assign(dataStorage, arguments[0]);
-            } else {
-                return dataStorage[arguments[0]];
-            }
+    function data(keyOrData, value) {
+        if (keyOrData === undefined) return dataStorage;
+        if (typeof keyOrData === 'object') {
+            Object.assign(dataStorage, keyOrData);
         } else {
-            dataStorage[arguments[0]] = arguments[1];
+            if (value === undefined) return dataStorage[keyOrData];
+            if (value === null) return delete dataStorage[keyOrData];
+            dataStorage[keyOrData] = value;
         }
     }
 
