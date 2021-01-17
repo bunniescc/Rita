@@ -1,6 +1,6 @@
 (function (WIN) {
     'use strict';
-    const VERSION = '0.0.5';
+    const VERSION = '0.0.6';
     const NAME = 'Rita';
     const LOGO = ' |\\   /|\n  \\|_|/\n  /   \\\n  \\___/\n';
 
@@ -82,7 +82,7 @@
         let pk = `cache#${view}@${pageDir}`;
         if (typeof html === "undefined") {
             let c = storage(pk);
-            if (c.v === pageVer && c.expire > (new Date().getTime())) {
+            if (c.v === pageVer && c.expire > Date.now()) {
                 return c.html;
             } else {
                 storage(pk, null);
@@ -90,7 +90,7 @@
         } else {
             storage(pk, {
                 v: pageVer,
-                expire: (new Date()).getTime() + cacheExpireTime,
+                expire: Date.now() + cacheExpireTime,
                 html: html,
             });
         }
@@ -327,7 +327,7 @@
             return null;
         }
         if (widgets[name]) {
-            let ritaId = 'rita' + (new Date()).getTime();
+            let ritaId = 'rita' + Date.now();
             let Initializer = widgets[name].initializer;
 
             el.setAttribute('ritaId', ritaId);
