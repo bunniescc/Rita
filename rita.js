@@ -29,6 +29,34 @@
         }
     }
 
+    function cookie(nameOrData, valueOrSecond, second) {
+        let exp = new Date(), defaultExpire = 2592000;
+        if (typeof nameOrData === 'object') {
+            exp.setTime(exp.getTime() + (valueOrSecond || defaultExpire) * 1000);
+            for (let k in nameOrData) if (nameOrData.hasOwnProperty(k)) document.cookie = `${k}=${escape(nameOrData[k])};expires=${exp.toUTCString()};path=/;`;
+        } else if (nameOrData === undefined) {
+            let allCookies = {}, cs, cArr = document.cookie.split(';');
+            for (let i = 0; i < cArr.length; i++) {
+                cs = cArr[i].split('=');
+                allCookies[cs[0].trim()] = escape(cs[1].trim());
+            }
+            return allCookies;
+        } else {
+            if (valueOrSecond === undefined) {
+                let arr = document.cookie.match(new RegExp(`(^| )${nameOrData}=([^;]*)(;|$)`));
+                return (arr !== null) ? unescape(arr[2]) : null;
+            } else {
+                if (valueOrSecond === null) {
+                    exp.setTime(exp.getTime() - 1);
+                    if (cookie(nameOrData) !== null) document.cookie = `${nameOrData}=;expires=${exp.toUTCString()};path=/;`;
+                } else {
+                    exp.setTime(exp.getTime() + (second || defaultExpire) * 1000);
+                    document.cookie = `${nameOrData}=${escape(valueOrSecond)};expires=${exp.toUTCString()};path=/;`;
+                }
+            }
+        }
+    }
+
     function baseStorage(storage, key, data) {
         if (!key) return;
         var realKey = `${NAME}@${scopeDir}$${key}`;
@@ -417,6 +445,12 @@
         },
         data() {
             return data.apply(this, arguments);
+        },
+        cookie() {
+            return cookie.apply(this, arguments);
+        },
+        session() {
+            return session.apply(this, arguments);
         },
         storage() {
             return storage.apply(this, arguments);
