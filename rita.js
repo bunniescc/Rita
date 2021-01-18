@@ -36,8 +36,9 @@
             for (let k in nameOrData) if (nameOrData.hasOwnProperty(k)) document.cookie = `${k}=${escape(nameOrData[k])};expires=${exp.toUTCString()};path=/;`;
         } else if (nameOrData === undefined) {
             let allCookies = {}, cs, cArr = document.cookie.split(';');
-            for (let i = 0; i < cArr.length; i++) {
-                cs = cArr[i].split('=');
+            for (let c of cArr) {
+                if (!c) continue;
+                let cs = c.split('=');
                 allCookies[cs[0].trim()] = escape(cs[1].trim());
             }
             return allCookies;
