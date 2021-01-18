@@ -1,6 +1,6 @@
 (function (WIN) {
     'use strict';
-    const VERSION = '0.0.6';
+    const VERSION = '0.0.7';
     const NAME = 'Rita';
     const LOGO = ' |\\   /|\n  \\|_|/\n  /   \\\n  \\___/\n';
 
