@@ -129,12 +129,7 @@
         let widgets = el.querySelectorAll('[auto-widget]');
         for (let w of widgets) {
             let widgetName = w.getAttribute('auto-widget');
-            let data = {};
-            for (let attr of w.attributes) {
-                if (attr.name.startsWith('data-')) {
-                    data[attr.name.substring(5)] = attr.value;
-                }
-            }
+            let data = Object.assign({}, w.dataset);
             widget(w, widgetName, data);
         }
     }
