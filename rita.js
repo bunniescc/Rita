@@ -413,8 +413,8 @@
 
     function configure(options = {}) {
         pageDir = options.pages || 'page';
-        widgetDir = options.widgets || (pageDir + '/widget');
-        scopeDir = options.scope || ('/');
+        widgetDir = options.widgets || `${pageDir}/widget`;
+        scopeDir = options.scope || '/';
         appDiv = document.querySelector(options.el) || document.body;
         isDebug = options.debug;
         pageVer = options.version;
